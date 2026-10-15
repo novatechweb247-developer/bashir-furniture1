@@ -188,8 +188,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   };
 
   // Enquiry Status Update
-  const updateEnquiryStatus = (id: string, status: 'New' | 'Contacted' | 'Completed') => {
-    setEnquiries(enquiries.map(e => e.id === id ? { ...e, status } : e));
+  const updateEnquiryStatus = async (id: string, status: 'New' | 'Contacted' | 'Completed') => {
+    if (isSupabaseConfigured) {
+      const { error } = await supabase.from('bashir_enquiries').update({ status }).eq('id', id);
+      if (error) {
+        alert('Could not update enquiry. ' + error.message);
+        return;
+      }
+    }
+    setEnquiries(prev => prev.map(e => e.id === id ? { ...e, status } : e));
   };
 
   if (!isAuthenticated) {
