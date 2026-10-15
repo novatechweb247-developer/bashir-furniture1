@@ -135,7 +135,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   };
 
   // Category Handlers
-  const handleSaveCategory = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSaveCategory = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const catData: Category = {
