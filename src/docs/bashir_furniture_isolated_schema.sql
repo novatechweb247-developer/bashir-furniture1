@@ -102,8 +102,10 @@ create policy "Bashir admins manage settings"
   with check (exists (select 1 from public.bashir_admin_users a where a.user_id = (select auth.uid())));
 
 drop policy if exists "Bashir public insert enquiries" on public.bashir_enquiries;
-create policy "Bashir public insert enquiries"
-  on public.bashir_enquiries for insert to anon, authenticated with check (true);
+drop policy if exists "Bashir public insert new enquiries" on public.bashir_enquiries;
+create policy "Bashir public insert new enquiries"
+  on public.bashir_enquiries for insert to anon, authenticated
+  with check (status = 'New');
 drop policy if exists "Bashir authenticated read enquiries" on public.bashir_enquiries;
 create policy "Bashir admins read enquiries"
   on public.bashir_enquiries for select to authenticated
