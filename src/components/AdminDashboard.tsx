@@ -160,10 +160,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setEditingCategory(null);
   };
 
-  const handleDeleteCategory = (id: string) => {
-    if (confirm('Delete this category?')) {
-      setCategories(categories.filter(c => c.id !== id));
+  const handleDeleteCategory = async (id: string) => {
+    if (!confirm('Delete this category?')) return;
+    if (isSupabaseConfigured) {
+      const { error } = await supabase.from('bashir_categories').delete().eq('id', id);
+      if (error) {
+        alert('Could not delete category. ' + error.message);
+        return;
+      }
     }
+    setCategories(prev => prev.filter(c => c.id !== id));
   };
 
   // Settings Handler
