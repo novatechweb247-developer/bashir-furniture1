@@ -146,13 +146,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       description: formData.get('description') as string,
     };
 
-    let updated: Category[];
-    if (editingCategory) {
-      updated = categories.map(c => c.id === catData.id ? catData : c);
-    } else {
-      updated = [...categories, catData];
+    if (isSupabaseConfigured) {
+      const { error } = await supabase.from('bashir_categories').upsert(catData);
+      if (error) {
+        alert('Could not save category. ' + error.message);
+        return;
+      }
     }
-    setCategories(updated);
+    setCategories(prev => editingCategory
+      ? prev.map(c => c.id === catData.id ? catData : c)
+      : [...prev, catData]);
     setIsCategoryModalOpen(false);
     setEditingCategory(null);
   };
