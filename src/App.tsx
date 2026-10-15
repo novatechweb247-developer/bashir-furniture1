@@ -159,7 +159,7 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleOrderEnquirySubmit = async (orderData: { customerName: string; phone: string; address: string; notes: string }) => {
+  const handleOrderEnquirySubmit = async (orderData: { customerName: string; phone: string; address: string; notes: string }): Promise<boolean> => {
     const newEnquiry: Enquiry = {
       id: 'enq-' + Date.now(),
       customer_name: orderData.customerName,
@@ -173,11 +173,12 @@ export default function App() {
       const { error } = await supabase.from('bashir_enquiries').insert(newEnquiry);
       if (error) {
         console.error('Could not save customer enquiry:', error.message);
-        alert('Your enquiry could not be sent right now. Please try again or contact us on WhatsApp.');
-        return;
+        alert('Your enquiry could not be saved. Please try again or contact us on WhatsApp.');
+        return false;
       }
     }
     setEnquiries(prev => [newEnquiry, ...prev]);
+    return true;
   };
 
   const featuredProducts = products.filter((p) => p.featured);
