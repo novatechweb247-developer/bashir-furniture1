@@ -122,10 +122,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setEditingProduct(null);
   };
 
-  const handleDeleteProduct = (id: string) => {
-    if (confirm('Are you sure you want to delete this product?')) {
-      setProducts(products.filter(p => p.id !== id));
+  const handleDeleteProduct = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this product?')) return;
+    if (isSupabaseConfigured) {
+      const { error } = await supabase.from('bashir_products').delete().eq('id', id);
+      if (error) {
+        alert('Could not delete product. ' + error.message);
+        return;
+      }
     }
+    setProducts(prev => prev.filter(p => p.id !== id));
   };
 
   // Category Handlers
