@@ -62,3 +62,7 @@ Welcome to **Bashir Furniture**, a high-end, production-ready furniture store we
    ```bash
    npm run build
    ```
+
+
+## Continuous integration
+GitHub Actions runs the TypeScript check and production build on pushes and pull requests.
