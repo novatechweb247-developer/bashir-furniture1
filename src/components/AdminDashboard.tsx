@@ -108,13 +108,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       created_at: editingProduct?.created_at || new Date().toISOString()
     };
 
-    let updated: Product[];
-    if (editingProduct) {
-      updated = products.map(p => p.id === productData.id ? productData : p);
-    } else {
-      updated = [productData, ...products];
+    if (isSupabaseConfigured) {
+      const { error } = await supabase.from('bashir_products').upsert(productData);
+      if (error) {
+        alert('Could not save product. ' + error.message);
+        return;
+      }
     }
-    setProducts(updated);
+    setProducts(prev => editingProduct
+      ? prev.map(p => p.id === productData.id ? productData : p)
+      : [productData, ...prev]);
     setIsProductModalOpen(false);
     setEditingProduct(null);
   };
