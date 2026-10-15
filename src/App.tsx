@@ -45,28 +45,28 @@ export default function App() {
     const loadData = async () => {
       try {
         if (isSupabaseConfigured) {
-          const { data: prodData } = await supabase.from('products').select('*');
+          const { data: prodData } = await supabase.from('bashir_products').select('*');
           if (prodData && prodData.length > 0) {
             setProducts(prodData);
           } else {
             setProducts(getLocalProducts());
           }
 
-          const { data: catData } = await supabase.from('categories').select('*');
+          const { data: catData } = await supabase.from('bashir_categories').select('*');
           if (catData && catData.length > 0) {
             setCategories(catData);
           } else {
             setCategories(getLocalCategories());
           }
 
-          const { data: setDa } = await supabase.from('site_settings').select('*').single();
+          const { data: setDa } = await supabase.from('bashir_site_settings').select('*').single();
           if (setDa) {
             setSettings(setDa);
           } else {
             setSettings(getLocalSettings());
           }
 
-          const { data: enqDa } = await supabase.from('enquiries').select('*');
+          const { data: enqDa } = await supabase.from('bashir_enquiries').select('*');
           if (enqDa) {
             setEnquiries(enqDa);
           } else {
