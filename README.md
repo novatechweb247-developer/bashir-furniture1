@@ -24,8 +24,8 @@ Welcome to **Bashir Furniture**, a high-end, production-ready furniture store we
    - Persistent cart between page visits via localStorage.
    - Direct order checkout transmitting formatted order summaries to WhatsApp with customer details.
 
-4. **Secure Admin Dashboard (`/admin`)**:
-   - Secure login via Supabase Auth or standalone demo credentials (`admin@bashirfurniture.com` / `admin123`).
+4. **Admin Dashboard (`/admin`)**:
+   - Supabase Auth login when Supabase is configured. Standalone demo mode is for local preview only and is not suitable for production.
    - Catalogue overview statistics (Total Products, Categories, Enquiries).
    - Products Management: Add, edit, delete products with multiple image URLs and specifications.
    - Categories Management: Add, edit, delete furniture categories.
@@ -37,8 +37,8 @@ Welcome to **Bashir Furniture**, a high-end, production-ready furniture store we
 ## Supabase Database & Storage Setup
 
 1. **Supabase Project Reference**: `efdtxbbhggdcohigelmw`
-2. **Database Schema**:
-   Run the SQL migration script located in `/src/docs/supabase_setup.sql` in your Supabase SQL Editor to provision tables (`products`, `categories`, `site_settings`, `enquiries`) with Row Level Security (RLS) policies.
+2. **Database Schema — IMPORTANT**:
+   This Supabase project is shared with another site. Do **not** run the legacy `/src/docs/supabase_setup.sql`, because it targets generic table names that may belong to the other site. Review `/src/docs/bashir_furniture_isolated_schema.sql` and run that migration only after confirming the project and policies. It creates Bashir-prefixed tables (`bashir_products`, `bashir_categories`, `bashir_site_settings`, `bashir_enquiries`) to keep the two sites' data separate. The current app falls back to local demo data until those tables exist.
 3. **Environment Variables**:
    Configure your `.env` or deployment environment variables:
    ```env
