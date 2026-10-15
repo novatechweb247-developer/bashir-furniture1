@@ -10,7 +10,7 @@ interface CartDrawerProps {
   removeItem: (productId: string, color?: string) => void;
   clearCart: () => void;
   settings: SiteSettings;
-  onSubmitEnquiry: (orderData: { customerName: string; phone: string; address: string; notes: string }) => void;
+  onSubmitEnquiry: (orderData: { customerName: string; phone: string; address: string; notes: string }) => Promise<boolean>;
 }
 
 export const CartDrawer: React.FC<CartDrawerProps> = ({
@@ -41,7 +41,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     return sum + price * item.quantity;
   }, 0);
 
-  const handleProceedToWhatsApp = (e: React.FormEvent) => {
+  const handleProceedToWhatsApp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!customerName || !phone || !address) {
       alert('Please fill in your Name, Phone Number, and Delivery Address.');
@@ -49,7 +49,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
     }
 
     setSubmitting(true);
-    onSubmitEnquiry({ customerName, phone, address, notes });
+    const saved = await onSubmitEnquiry({ customerName, phone, address, notes });
+    if (!saved) {
+      setSubmitting(false);
+      return;
+    }
 
     // Build WhatsApp order summary
     const cleanNumber = settings.whatsapp.replace(/[^0-9+]/g, '');
