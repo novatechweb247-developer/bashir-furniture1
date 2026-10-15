@@ -1,0 +1,6 @@
+{
+  "name": "Bashir Furniture",
+  "description": "Premium furniture store & handcrafted collections",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
