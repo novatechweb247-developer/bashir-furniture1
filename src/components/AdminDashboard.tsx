@@ -48,20 +48,33 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     e.preventDefault();
     setLoginError('');
 
-    if (isSupabaseConfigured) {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) {
-        setLoginError(error.message || 'Invalid admin credentials.');
+    if (!isSupabaseConfigured) {
+      setLoginError('Admin sign-in is disabled because Supabase is not configured. Configure the public Supabase URL and publishable key first.');
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error || !data.user) {
+        setLoginError(error?.message || 'Unable to sign in. Check your credentials.');
         return;
       }
-      setIsAuthenticated(true);
-    } else {
-      // Standalone mode demo credentials
-      if (email === 'admin@bashirfurniture.com' && password === 'admin123') {
-        setIsAuthenticated(true);
-      } else {
-        setLoginError('Invalid credentials. (Demo: admin@bashirfurniture.com / admin123)');
+
+      const { data: membership, error: membershipError } = await supabase
+        .from('bashir_admin_users')
+        .select('user_id')
+        .eq('user_id', data.user.id)
+        .maybeSingle();
+
+      if (membershipError || !membership) {
+        await supabase.auth.signOut();
+        setLoginError('This account is not authorized to manage Bashir Furniture.');
+        return;
       }
+
+      setIsAuthenticated(true);
+    } catch {
+      setLoginError('Sign-in failed. Check your connection and try again.');
     }
   };
 
@@ -211,10 +224,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </button>
           </form>
 
-          <div className="text-center pt-2 text-xs text-stone-400">
-            Demo Standalone Login: <br />
-            <span className="font-mono text-stone-600">admin@bashirfurniture.com / admin123</span>
-          </div>
+
         </div>
       </div>
     );
