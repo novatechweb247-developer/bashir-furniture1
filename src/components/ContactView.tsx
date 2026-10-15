@@ -31,7 +31,8 @@ export const ContactView: React.FC<ContactViewProps> = ({ settings }) => {
 
     try {
       if (isSupabaseConfigured) {
-        await supabase.from('enquiries').insert([newEnquiry]);
+        const { error } = await supabase.from('bashir_enquiries').insert(newEnquiry);
+        if (error) throw error;
       }
       const existing = getLocalEnquiries();
       saveLocalEnquiries([newEnquiry, ...existing]);
@@ -42,8 +43,8 @@ export const ContactView: React.FC<ContactViewProps> = ({ settings }) => {
       setEmail('');
       setMessage('');
     } catch (err) {
-      console.error(err);
-      alert('Error submitting enquiry. Please try again.');
+      console.error('Could not submit Bashir contact enquiry:', err);
+      alert('Your message could not be sent. Please try again or contact us on WhatsApp.');
     } finally {
       setLoading(false);
     }
