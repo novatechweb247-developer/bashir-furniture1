@@ -173,9 +173,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   };
 
   // Settings Handler
-  const handleSaveSettings = (e: React.FormEvent) => {
+  const handleSaveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSettings(settingsForm);
+    const nextSettings = { ...settingsForm, id: 'main' };
+    if (isSupabaseConfigured) {
+      const { error } = await supabase.from('bashir_site_settings').upsert(nextSettings);
+      if (error) {
+        alert('Could not save site settings. ' + error.message);
+        return;
+      }
+    }
+    setSettings(nextSettings);
     alert('Site settings updated successfully!');
   };
 
