@@ -15,9 +15,13 @@ export const Footer: React.FC<FooterProps> = ({ settings, setCurrentTab }) => {
           {/* Brand info */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-[#D4AF37] text-stone-950 flex items-center justify-center font-serif text-lg font-bold">
-                BF
-              </div>
+              {settings.logo_url ? (
+                <img src={settings.logo_url} alt={settings.company_name + ' logo'} className="w-10 h-10 object-contain rounded-full" />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-[#D4AF37] text-stone-950 flex items-center justify-center font-serif text-lg font-bold">
+                  BF
+                </div>
+              )}
               <span className="font-serif text-2xl font-bold tracking-tight text-white">
                 {settings.company_name}
               </span>
