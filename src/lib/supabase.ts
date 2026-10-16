@@ -2,13 +2,11 @@ import { createClient } from '@supabase/supabase-js';
 import { Product, Category, SiteSettings, Enquiry } from '../types';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://efdtxbbhggdcohigelmw.supabase.co';
-const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder';
+const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_FYuv4ejFnjYOOg8i29xD5w_3oKyytaD';
 
-export const isSupabaseConfigured = Boolean(
-  import.meta.env.VITE_SUPABASE_URL && 
-  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY && 
-  !import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY.includes('placeholder')
-);
+// Public client configuration can fall back to these project-specific values,
+// so the admin login works even when Vercel build environment variables are absent.
+export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseKey && !supabaseKey.includes('placeholder'));
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
