@@ -43,6 +43,33 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   // Settings State form
   const [settingsForm, setSettingsForm] = useState<SiteSettings>(settings);
+  const [uploadingImage, setUploadingImage] = useState(false);
+
+  const uploadImage = async (file: File): Promise<string | null> => {
+    if (!file.type.startsWith('image/')) {
+      alert('Please choose an image file.');
+      return null;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      alert('Please choose an image smaller than 10 MB.');
+      return null;
+    }
+    setUploadingImage(true);
+    try {
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '-');
+      const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${safeName}`;
+      const { error } = await supabase.storage.from('bashir-images').upload(path, file, { upsert: false, contentType: file.type });
+      if (error) throw error;
+      const { data } = supabase.storage.from('bashir-images').getPublicUrl(path);
+      return data.publicUrl;
+    } catch (error) {
+      console.error('Image upload failed:', error);
+      alert('Image upload failed. Please make sure you are signed in and try again.');
+      return null;
+    } finally {
+      setUploadingImage(false);
+    }
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -636,13 +663,24 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1">Hero Background Image URL</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1">Hero Background Image</label>
                   <input
                     type="text"
                     value={settingsForm.hero_image}
                     onChange={(e) => setSettingsForm({ ...settingsForm, hero_image: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl border border-stone-300 text-sm focus:outline-none focus:border-[#D4AF37]"
                   />
+                  <label className="mt-2 inline-flex cursor-pointer items-center gap-2 rounded-xl border border-stone-300 px-4 py-2.5 text-sm font-semibold text-stone-700 hover:bg-stone-50">
+                    {uploadingImage ? 'Uploading image…' : 'Choose hero image from phone'}
+                    <input type="file" accept="image/*" disabled={uploadingImage} className="hidden" onChange={async (event) => {
+                      const file = event.currentTarget.files?.[0];
+                      if (file) {
+                        const url = await uploadImage(file);
+                        if (url) setSettingsForm((previous) => ({ ...previous, hero_image: url }));
+                      }
+                      event.currentTarget.value = '';
+                    }} />
+                  </label>
                 </div>
               </div>
 
@@ -737,15 +775,29 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1">Image URLs (comma separated) *</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1">Product Images *</label>
                   <input
                     type="text"
                     name="images"
                     required
                     defaultValue={editingProduct?.images?.join(', ') || ''}
-                    placeholder="https://images.unsplash.com/..., https://..."
+                    placeholder="Uploaded image URLs appear here"
                     className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:border-[#D4AF37]"
                   />
+                  <label className="mt-2 inline-flex cursor-pointer items-center gap-2 rounded-xl border border-stone-300 px-4 py-2.5 text-sm font-semibold text-stone-700 hover:bg-stone-50">
+                    {uploadingImage ? 'Uploading image…' : 'Choose image from phone'}
+                    <input type="file" accept="image/*" multiple disabled={uploadingImage} className="hidden" onChange={async (event) => {
+                      const files = Array.from(event.currentTarget.files || []);
+                      const form = event.currentTarget.form;
+                      const imagesInput = form?.elements.namedItem('images') as HTMLInputElement | null;
+                      for (const file of files) {
+                        const url = await uploadImage(file);
+                        if (url && imagesInput) imagesInput.value = imagesInput.value.trim() ? imagesInput.value.trim() + ', ' + url : url;
+                      }
+                      event.currentTarget.value = '';
+                    }} />
+                  </label>
+                  <p className="mt-1 text-xs text-stone-500">Choose one or more images. Maximum 10 MB per image.</p>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -842,14 +894,28 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1">Image URL *</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1">Category Image *</label>
                   <input
                     type="text"
                     name="image"
                     required
                     defaultValue={editingCategory?.image || ''}
+                    placeholder="Uploaded image URL appears here"
                     className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:border-[#D4AF37]"
                   />
+                  <label className="mt-2 inline-flex cursor-pointer items-center gap-2 rounded-xl border border-stone-300 px-4 py-2.5 text-sm font-semibold text-stone-700 hover:bg-stone-50">
+                    {uploadingImage ? 'Uploading image…' : 'Choose image from phone'}
+                    <input type="file" accept="image/*" disabled={uploadingImage} className="hidden" onChange={async (event) => {
+                      const file = event.currentTarget.files?.[0];
+                      const form = event.currentTarget.form;
+                      if (file && form) {
+                        const url = await uploadImage(file);
+                        const imageInput = form.elements.namedItem('image') as HTMLInputElement | null;
+                        if (url && imageInput) imageInput.value = url;
+                      }
+                      event.currentTarget.value = '';
+                    }} />
+                  </label>
                 </div>
 
                 <div>
