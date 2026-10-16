@@ -68,9 +68,13 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => setCurrentTab('home')}
             className="flex items-center gap-3 text-left group focus:outline-none"
           >
-            <div className="w-11 h-11 rounded-full bg-[#2C2825] text-[#D4AF37] flex items-center justify-center font-serif text-xl font-bold tracking-wider shadow-md group-hover:bg-[#3E3834] transition-colors">
-              BF
-            </div>
+            {settings.logo_url ? (
+              <img src={settings.logo_url} alt={settings.company_name + ' logo'} className="w-11 h-11 object-contain rounded-full" />
+            ) : (
+              <div className="w-11 h-11 rounded-full bg-[#2C2825] text-[#D4AF37] flex items-center justify-center font-serif text-xl font-bold tracking-wider shadow-md group-hover:bg-[#3E3834] transition-colors">
+                BF
+              </div>
+            )}
             <div>
               <span className="font-serif text-2xl font-bold tracking-tight text-[#2C2825] group-hover:text-[#8C6D24] transition-colors block">
                 {settings.company_name}
