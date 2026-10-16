@@ -182,6 +182,24 @@ export default function App() {
   };
 
   const featuredProducts = products.filter((p) => p.featured);
+  const isAdminRoute = window.location.pathname.replace(/\\/+$/, '') === '/admin';
+
+  // Render the admin portal only on /admin. The public site navigation is
+  // intentionally not mounted on this route, and the dashboard requires login.
+  if (isAdminRoute) {
+    return (
+      <AdminDashboard
+        products={products}
+        setProducts={setProducts}
+        categories={categories}
+        setCategories={setCategories}
+        settings={settings}
+        setSettings={setSettings}
+        enquiries={enquiries}
+        setEnquiries={setEnquiries}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FBF9F5] text-[#2C2825]">
