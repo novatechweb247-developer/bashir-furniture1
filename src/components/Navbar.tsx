@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingBag, Search, Menu, X, ShieldCheck, PhoneCall, UserCheck } from 'lucide-react';
+import { ShoppingBag, Search, Menu, X, ShieldCheck, PhoneCall } from 'lucide-react';
 import { SiteSettings, CartItem } from '../types';
 
 interface NavbarProps {
@@ -49,13 +49,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <PhoneCall className="w-3.5 h-3.5 text-[#D4AF37]" /> {settings.phone}
             </a>
-            <span className="text-stone-400">|</span>
-            <button 
-              onClick={() => setCurrentTab('admin')} 
-              className={`flex items-center gap-1 hover:text-[#D4AF37] transition-colors ${currentTab === 'admin' ? 'text-[#D4AF37] font-semibold' : ''}`}
-            >
-              <UserCheck className="w-3.5 h-3.5" /> Admin Portal
-            </button>
+
           </div>
         </div>
       </div>
@@ -157,17 +151,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 {link.label}
               </button>
             ))}
-            <div className="pt-2 border-t border-stone-200 flex flex-col gap-2">
-              <button
-                onClick={() => {
-                  setCurrentTab('admin');
-                  setMobileMenuOpen(false);
-                }}
-                className="w-full text-left px-4 py-3 rounded-lg text-base font-medium text-stone-700 hover:bg-stone-200/50 flex items-center gap-2"
-              >
-                <UserCheck className="w-5 h-5 text-[#D4AF37]" /> Admin Dashboard
-              </button>
-            </div>
+
           </div>
         )}
       </header>
