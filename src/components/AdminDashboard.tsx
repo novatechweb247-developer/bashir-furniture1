@@ -785,14 +785,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:border-[#D4AF37]"
                   />
                   <label className="mt-2 inline-flex cursor-pointer items-center gap-2 rounded-xl border border-stone-300 px-4 py-2.5 text-sm font-semibold text-stone-700 hover:bg-stone-50">
-                    {uploadingImage ? 'Uploading image…' : 'Choose image from phone'}
+                    {uploadingImage ? 'Uploading image…' : 'Replace/select image(s) from phone'}
                     <input type="file" accept="image/*" multiple disabled={uploadingImage} className="hidden" onChange={async (event) => {
                       const files = Array.from(event.currentTarget.files || []);
                       const form = event.currentTarget.form;
                       const imagesInput = form?.elements.namedItem('images') as HTMLInputElement | null;
+                      const uploadedUrls: string[] = [];
                       for (const file of files) {
                         const url = await uploadImage(file);
-                        if (url && imagesInput) imagesInput.value = imagesInput.value.trim() ? imagesInput.value.trim() + ', ' + url : url;
+                        if (url) uploadedUrls.push(url);
+                      }
+                      // Selecting new files while editing replaces the previous image list,
+                      // rather than silently appending to the old URLs.
+                      if (uploadedUrls.length && imagesInput) {
+                        imagesInput.value = uploadedUrls.join(', ');
                       }
                       event.currentTarget.value = '';
                     }} />
