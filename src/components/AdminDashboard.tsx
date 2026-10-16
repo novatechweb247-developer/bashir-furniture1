@@ -641,6 +641,40 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
 
               <div className="pt-4 border-t border-stone-200 space-y-4">
+                <h3 className="font-serif text-lg font-bold text-[#2C2825]">Branding & Social Media</h3>
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1">Website Logo</label>
+                  {settingsForm.logo_url && <img src={settingsForm.logo_url} alt="Current website logo" className="mb-3 h-16 w-16 rounded-lg border border-stone-200 object-contain p-1" />}
+                  <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-stone-300 px-4 py-2.5 text-sm font-semibold text-stone-700 hover:bg-stone-50">
+                    {uploadingImage ? 'Uploading image…' : 'Upload / replace logo from phone'}
+                    <input type="file" accept="image/*" disabled={uploadingImage} className="hidden" onChange={async (event) => {
+                      const file = event.currentTarget.files?.[0];
+                      if (file) {
+                        const url = await uploadImage(file);
+                        if (url) setSettingsForm((previous) => ({ ...previous, logo_url: url }));
+                      }
+                      event.currentTarget.value = '';
+                    }} />
+                  </label>
+                  <p className="mt-1 text-xs text-stone-500">Upload a logo (maximum 10 MB), then save site settings.</p>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1">Instagram URL</label>
+                    <input type="url" placeholder="https://instagram.com/yourpage" value={settingsForm.social_links?.instagram || ''} onChange={(e) => setSettingsForm((previous) => ({ ...previous, social_links: { ...previous.social_links, instagram: e.target.value } }))} className="w-full px-4 py-3 rounded-xl border border-stone-300 text-sm focus:outline-none focus:border-[#D4AF37]" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1">Facebook URL</label>
+                    <input type="url" placeholder="https://facebook.com/yourpage" value={settingsForm.social_links?.facebook || ''} onChange={(e) => setSettingsForm((previous) => ({ ...previous, social_links: { ...previous.social_links, facebook: e.target.value } }))} className="w-full px-4 py-3 rounded-xl border border-stone-300 text-sm focus:outline-none focus:border-[#D4AF37]" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1">Twitter / X URL</label>
+                    <input type="url" placeholder="https://x.com/yourpage" value={settingsForm.social_links?.twitter || ''} onChange={(e) => setSettingsForm((previous) => ({ ...previous, social_links: { ...previous.social_links, twitter: e.target.value } }))} className="w-full px-4 py-3 rounded-xl border border-stone-300 text-sm focus:outline-none focus:border-[#D4AF37]" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-stone-200 space-y-4">
                 <h3 className="font-serif text-lg font-bold text-[#2C2825]">Hero Section Banner</h3>
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1">Hero Title</label>
