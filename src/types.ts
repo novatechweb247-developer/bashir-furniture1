@@ -28,6 +28,7 @@ export interface SiteSettings {
   hero_title: string;
   hero_subtitle: string;
   hero_image: string;
+  logo_url?: string;
   company_name: string;
   phone: string;
   whatsapp: string;
