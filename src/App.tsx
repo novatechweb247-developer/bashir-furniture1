@@ -182,7 +182,7 @@ export default function App() {
   };
 
   const featuredProducts = products.filter((p) => p.featured);
-  const isAdminRoute = window.location.pathname.replace(/\\/+$/, '') === '/admin';
+  const isAdminRoute = window.location.pathname.replace(/\/+$/, '') === '/admin';
 
   // Render the admin portal only on /admin. The public site navigation is
   // intentionally not mounted on this route, and the dashboard requires login.
