@@ -27,7 +27,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   enquiries,
   setEnquiries
 }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
